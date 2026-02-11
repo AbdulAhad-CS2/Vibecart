@@ -191,10 +191,14 @@ export default function Navbar() {
 
       {/* LOGO */}
       <Link href="/" className="flex items-center gap-3 cursor-pointer">
-         <Image src="/logo.webp" alt="Sole Vault icon" width={40} height={40} className="w-8 md:w-10 h-auto opacity-90" />
-         <h1 className="text-xl md:text-3xl font-extrabold tracking-tighter uppercase flex items-center">
-            <span className="text-gray-200 bg-clip-text bg-gradient-to-b from-white to-gray-300 text-transparent">SOLE</span>
-            <span className={`text-blue-500 ml-2 ${blueGlow}`}>VAULT</span>
+         <Image src="/onlylogo.png" alt="Sole Vault icon" width={40} height={40} className="w-8 md:w-10 h-auto opacity-90" />
+         <h1 className="text-xl md:text-2xl font-bold tracking-widest uppercase flex items-center font-serif">
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-[#FBF5B7] via-[#BF953F] to-[#AA771C] drop-shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+               VIBE
+            </span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-[#FBF5B7] via-[#BF953F] to-[#AA771C] drop-shadow-[0_0_10px_rgba(234,179,8,0.2)] ml-2">
+               CART
+            </span>
          </h1>
       </Link>
       

@@ -6,16 +6,17 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Zap, Clock, Gem } from "lucide-react";
 
-// --- MOCK DATA ---
+// --- MOCK DATA (Updated for Vibe Cart Inventory) ---
 const SALE_PRODUCTS = [
-  { id: "s1", name: "Ultraboost light", brand: "Adidas", category: "Sports", price: 120, originalPrice: 180, discount: 33, image: "/Ultraboost Light.webp", colors: ["#000", "#fff"], isSale: true },
-  { id: "s2", name: "Air Max Pulse", brand: "Nike", category: "Classic", price: 85, originalPrice: 170, discount: 50, image: "/Air Max Pulse.webp", colors: ["#ccc"], isSale: true },
-  { id: "s3", name: "RS-X Toys", brand: "Puma", category: "New Arrival", price: 60, originalPrice: 120, discount: 50, image: "/RS-X Efekt.webp", colors: ["#f00"], isSale: true },
-  { id: "s4", name: "550 'White Grey'", brand: "New Balance", category: "Office", price: 90, originalPrice: 110, discount: 18, image: "/formal shoe.webp", colors: ["#fff"], isSale: true },
-  { id: "s5", name: "Y-3 Kaiwa", brand: "Adidas", category: "Clearance", price: 200, originalPrice: 400, discount: 50, image: "/Duck Low.webp", colors: ["#000"], isSale: true, isClearance: true },
-  { id: "s6", name: "Dunk High Retro", brand: "Nike", category: "Classic", price: 100, originalPrice: 125, discount: 20, image: "/B44 Blade.webp", colors: ["#0f0"], isSale: true }
+  { id: "s1", name: "Royal Oak 'Jumbo'", brand: "Rolex Style", category: "Luxury", price: 2800, originalPrice: 3500, discount: 20, image: "/watch-1.png", colors: ["#000"], isSale: true },
+  { id: "s2", name: "Sauvage Elixir", brand: "Pendora", category: "Perfume", price: 1500, originalPrice: 1800, discount: 16, image: "/perfume-1.png", colors: ["#000"], isSale: true },
+  { id: "s3", name: "Nautilus Blue", brand: "Patek Style", category: "Luxury", price: 3200, originalPrice: 4200, discount: 23, image: "/watch-2.png", colors: ["#000"], isSale: true },
+  { id: "s4", name: "Creed Aventus", brand: "Armaf", category: "Perfume", price: 1800, originalPrice: 2200, discount: 18, image: "/perfume-1.png", colors: ["#000"], isSale: true },
+  { id: "s5", name: "Hublot Big Bang", brand: "Hublot Style", category: "Sport", price: 2000, originalPrice: 4000, discount: 50, image: "/watch-1.png", colors: ["#000"], isSale: true, isClearance: true },
+  { id: "s6", name: "Oud Mood", brand: "Lattafa", category: "Perfume", price: 1200, originalPrice: 2500, discount: 52, image: "/perfume-1.png", colors: ["#000"], isSale: true, isClearance: true }
 ];
 
 function SaleContent() {
@@ -41,33 +42,60 @@ function SaleContent() {
     return true;
   });
 
-  const getButtonStyle = (isActive: boolean, activeColor: string) => {
+  const getButtonStyle = (isActive: boolean) => {
     return isActive 
-      ? `rounded-full px-4 md:px-6 text-sm whitespace-nowrap text-white border border-transparent ${activeColor}` 
-      : `rounded-full px-4 md:px-6 text-sm whitespace-nowrap bg-transparent border border-white/20 text-white hover:bg-white/10`;
+      ? "bg-yellow-600 text-black border-yellow-600 font-bold" 
+      : "bg-transparent text-gray-400 border-white/20 hover:border-yellow-500 hover:text-yellow-500";
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
       
       {/* --- FILTER TABS --- */}
-      <div className="flex gap-3 mb-8 overflow-x-auto pb-4 scrollbar-hide">
-        <Button variant="ghost" onClick={() => handleFilterChange("all")} className={activeFilter === "all" ? "rounded-full px-6 bg-white text-black hover:bg-gray-200" : "rounded-full px-6 bg-transparent border border-white/20 text-white hover:bg-white/10"}>View All</Button>
-        <Button variant="ghost" onClick={() => handleFilterChange("20")} className={getButtonStyle(activeFilter === "20", "bg-blue-600 hover:bg-blue-500")}>Up to 20% Off</Button>
-        <Button variant="ghost" onClick={() => handleFilterChange("50")} className={getButtonStyle(activeFilter === "50", "bg-purple-600 hover:bg-purple-500")}>Up to 50% Off</Button>
-        <Button variant="ghost" onClick={() => handleFilterChange("clearance")} className={getButtonStyle(activeFilter === "clearance", "bg-red-600 hover:bg-red-500")}>Clearance</Button>
+      <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <Button 
+            variant="outline" 
+            onClick={() => handleFilterChange("all")} 
+            className={`rounded-full px-8 py-6 text-sm transition-all duration-300 ${getButtonStyle(activeFilter === "all")}`}
+        >
+            View All
+        </Button>
+        <Button 
+            variant="outline" 
+            onClick={() => handleFilterChange("20")} 
+            className={`rounded-full px-8 py-6 text-sm transition-all duration-300 ${getButtonStyle(activeFilter === "20")}`}
+        >
+            Under 20% Off
+        </Button>
+        <Button 
+            variant="outline" 
+            onClick={() => handleFilterChange("50")} 
+            className={`rounded-full px-8 py-6 text-sm transition-all duration-300 ${getButtonStyle(activeFilter === "50")}`}
+        >
+            Half Price
+        </Button>
+        <Button 
+            variant="outline" 
+            onClick={() => handleFilterChange("clearance")} 
+            className={`rounded-full px-8 py-6 text-sm transition-all duration-300 ${getButtonStyle(activeFilter === "clearance")}`}
+        >
+            Last Chance
+        </Button>
       </div>
 
       {/* --- PRODUCT GRID --- */}
-      {/* Clean Grid - No hacks needed since ProductCard handles the UI internally */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
         {filteredProducts.map((item: any) => (
            <ProductCard key={item.id} product={item} />
         ))}
       </div>
       
       {filteredProducts.length === 0 && (
-         <div className="text-center py-20 text-gray-500">No items found.</div>
+         <div className="text-center py-32 flex flex-col items-center justify-center space-y-4">
+            <Gem className="w-12 h-12 text-white/10" />
+            <p className="text-gray-500 font-serif">No exclusive items found in this category.</p>
+            <Button variant="link" className="text-yellow-500" onClick={() => handleFilterChange("all")}>View All Offers</Button>
+         </div>
       )}
 
     </div>
@@ -79,20 +107,29 @@ export default function SalePage() {
     <main className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
       <Navbar />
       
-      <section className="relative w-full h-[35vh] md:h-[40vh] flex items-center justify-center overflow-hidden border-b border-white/10 bg-red-900/10 pt-16 md:pt-0">
-         <div className="absolute inset-0 bg-[url('/noise_desktop.webp')] opacity-20 mix-blend-overlay" />
-         <div className="text-center space-y-2 md:space-y-4 relative z-10 px-4">
-            <div className="flex justify-center items-center gap-2 text-red-500 font-bold tracking-widest uppercase animate-pulse text-xs md:text-base">
-               <Zap className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" /> Flash Deals
-            </div>
-            <h1 className="text-4xl md:text-8xl font-black italic tracking-tighter uppercase leading-none">
-               MID-SEASON <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">SALE</span>
+      {/* HERO SECTION */}
+      <section className="relative w-full h-[45vh] md:h-[50vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/10 pt-16 md:pt-0">
+         
+         {/* Background Effect */}
+         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-[#050505] to-[#050505]" />
+         
+         <div className="text-center space-y-6 relative z-10 px-4 max-w-4xl">
+            <Badge className="bg-yellow-600/10 text-yellow-500 border border-yellow-500/20 px-4 py-1.5 text-xs tracking-[0.2em] uppercase mx-auto w-fit font-serif flex items-center gap-2">
+                <Clock className="w-3 h-3" /> Limited Time Access
+            </Badge>
+            
+            <h1 className="text-5xl md:text-8xl font-serif font-black italic tracking-tighter uppercase leading-[0.9]">
+               PRIVATE <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">ARCHIVE</span>
             </h1>
-            <p className="text-gray-400 text-xs md:text-base">Limited time offers. While stocks last.</p>
+            
+            <p className="text-gray-400 text-sm md:text-lg max-w-lg mx-auto leading-relaxed">
+               Exclusive pricing on our last-remaining premium stock. 
+               Once these pieces are gone, they will not be restocked.
+            </p>
          </div>
       </section>
 
-      <Suspense fallback={<div className="text-center py-20">Loading deals...</div>}>
+      <Suspense fallback={<div className="text-center py-32 text-yellow-500">Loading exclusive offers...</div>}>
          <SaleContent />
       </Suspense>
 

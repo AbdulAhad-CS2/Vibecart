@@ -267,24 +267,27 @@ export default function Navbar() {
         
         {/* CART BUTTON */}
         <button 
-           onClick={(e) => {
-              toggleCart();
-              (e.currentTarget as HTMLElement).blur(); // Also fixing focus on cart button just in case
-           }}
-           className="relative p-2 text-white hover:text-blue-400 transition group focus:outline-none"
+          onClick={(e) => {
+            toggleCart();
+            (e.currentTarget as HTMLElement).blur(); 
+          }}
+          className="relative p-2 text-white hover:text-[#FCF6BA] transition-all duration-300 group focus:outline-none"
         >
-           <ShoppingBag className="w-6 h-6" />
-           {cartCount > 0 && (
-             <span className="absolute top-0 right-0 bg-blue-600 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-               {cartCount}
-             </span>
-           )}
+          {/* Bag Icon with slight glow on hover */}
+          <ShoppingBag className="w-6 h-6 transition-transform group-hover:scale-110 group-active:scale-95" />
+          
+          {/* LUXURY GOLD NOTIFICATION BADGE */}
+          {cartCount > 0 && (
+            <span className="absolute top-0 right-0 bg-gradient-to-r from-[#BF953F] to-[#B38728] text-black text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(191,149,63,0.6)] border border-black/10">
+              {cartCount}
+            </span>
+          )}
         </button>
 
         <div className="flex items-center">
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-full transition-all shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+              <button className="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] hover:from-[#FCF6BA] hover:to-[#BF953F] text-black text-xs font-black px-6 py-2 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(191,149,63,0.4)] hover:shadow-[0_0_30px_rgba(252,246,186,0.6)] hover:scale-105 uppercase tracking-widest font-serif">
                 SIGN IN
               </button>
             </SignInButton>

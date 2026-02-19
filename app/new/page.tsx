@@ -236,7 +236,7 @@ const DesktopExclusive = () => (
            <div className="flex items-center gap-2 text-yellow-400 font-bold tracking-widest text-sm uppercase">
               <Gem className="w-4 h-4" fill="currentColor" /> Private Reserve
            </div>
-           <h2 className="text-5xl font-serif font-black italic uppercase leading-none">VIBE CART <span className="text-white/20">BLACK</span></h2>
+           <h2 className="text-5xl font-serif font-black italic uppercase leading-none">VIBE CART </h2>
            <p className="text-gray-400 max-w-md text-lg">Join the elite club for early access to our most limited stock and premium concierge service.</p>
            <Button size="lg" className="bg-white text-black font-bold rounded-full mt-4 hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.2)]">REQUEST ACCESS</Button>
         </div>

@@ -11,7 +11,7 @@ const WATCH_CATS = [
     id: 1, 
     title: "The Executive", 
     subtitle: "Business & Dress", 
-    image: "/watch-2.png", // Use your specific images
+    image: "/watch-2.png", 
     bg: "bg-gradient-to-br from-gray-900 to-black"
   },
   { 
@@ -65,7 +65,7 @@ const PERFUME_CATS = [
   { 
     id: 4, 
     title: "Pakistani Edit", 
-    subtitle: "Local Impressions", 
+    subtitle: "Local Brands", 
     image: "/perfume-1.png",
     bg: "bg-gradient-to-br from-green-900/30 to-black"
   },
@@ -90,9 +90,13 @@ const BrandTicker = ({ brands, color = "text-white" }: { brands: string[], color
   </div>
 );
 
-// --- SUB-COMPONENT: COLLECTION CARD ---
-const CategoryCard = ({ item }: { item: any }) => (
-  <Link href={`/shop/${item.title.toLowerCase().replace(" ", "-")}`} className="group relative h-[250px] overflow-hidden rounded-2xl border border-white/10 transition-all hover:border-white/30">
+// --- SUB-COMPONENT: COLLECTION CARD (UPDATED LINK LOGIC) ---
+const CategoryCard = ({ item, type }: { item: any, type: "watch" | "perfume" }) => (
+  // 1. UPDATED HREF: Points to /product with query params
+  <Link 
+    href={`/product?context=${type}&category=${encodeURIComponent(item.title)}`} 
+    className="group relative h-[250px] overflow-hidden rounded-2xl border border-white/10 transition-all hover:border-white/30"
+  >
     {/* Background */}
     <div className={`absolute inset-0 ${item.bg} opacity-80 transition-opacity group-hover:opacity-100`} />
     
@@ -138,11 +142,11 @@ export default function CollectionsSection() {
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
            {WATCH_CATS.map((cat) => (
-             <CategoryCard key={cat.id} item={cat} />
+             // Pass type="watch"
+             <CategoryCard key={cat.id} item={cat} type="watch" />
            ))}
         </div>
 
-        {/* Brands Ticker */}
         <BrandTicker brands={WATCH_BRANDS} color="text-yellow-500" />
       </div>
 
@@ -162,11 +166,11 @@ export default function CollectionsSection() {
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
            {PERFUME_CATS.map((cat) => (
-             <CategoryCard key={cat.id} item={cat} />
+             // Pass type="perfume"
+             <CategoryCard key={cat.id} item={cat} type="perfume" />
            ))}
         </div>
 
-        {/* Brands Ticker */}
         <BrandTicker brands={PERFUME_BRANDS} color="text-blue-500" />
       </div>
 

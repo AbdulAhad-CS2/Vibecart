@@ -16,6 +16,7 @@ import {
   Instagram, 
   Twitter 
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // --- IMPORTS FROM YOUR PROJECT ---
 // Make sure these components exist in your project
@@ -333,45 +334,57 @@ const SpotlightSection = () => {
 
 const PremiumNewsletter = () => {
     return (
-        <section className="py-24 px-6 relative overflow-hidden">
-            <div className="max-w-4xl mx-auto bg-gradient-to-b from-blue-900/20 to-transparent border border-blue-500/20 rounded-3xl p-8 md:p-12 text-center relative z-10">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">JOIN THE <span className="text-blue-500">VIP CLUB</span></h2>
-                <p className="text-gray-400 mb-8 max-w-lg mx-auto">Get access to secret drops, flash sales, and specific discount codes for Karachi & Lahore customers.</p>
-                
-                <form className="flex flex-col gap-4 max-w-lg mx-auto">
-                    {/* Input Row */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="relative">
-                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                             <input 
-                                type="email" 
-                                placeholder="Email address" 
-                                className="w-full bg-black/50 border border-white/10 rounded-full pl-10 pr-6 py-4 text-white focus:outline-none focus:border-blue-500 transition"
-                                required
-                            />
-                        </div>
-                        <div className="relative">
-                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                            <input 
-                                type="tel" 
-                                placeholder="Phone (03XX...)" 
-                                className="w-full bg-black/50 border border-white/10 rounded-full pl-10 pr-6 py-4 text-white focus:outline-none focus:border-blue-500 transition"
-                                required
-                            />
-                        </div>
-                    </div>
-                    
-                    {/* Button Row */}
-                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-full transition shadow-[0_0_20px_rgba(37,99,235,0.5)]">
-                        JOIN THE CLUB
-                    </button>
-                    
-                    <p className="text-xs text-gray-500 mt-2">We promise not to spam. WhatsApp updates included.</p>
-                </form>
+        <section className="relative z-10 pb-24 bg-[#050505]">
+          <div className="max-w-5xl mx-auto px-6">
+              <div className="relative rounded-[2rem] overflow-hidden border border-white/10 px-6 py-24 text-center group">
+                  
+                  {/* Dynamic Background */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#111] to-black z-0" />
+                  <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 z-0" />
+                  <div className="absolute -top-24 -right-24 w-64 h-64 bg-yellow-600/20 rounded-full blur-[80px] group-hover:bg-yellow-600/30 transition-all duration-1000" />
+                  <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] group-hover:bg-blue-600/20 transition-all duration-1000" />
 
-                {/* --- SOCIAL LINKS SECTION --- */}
+                  <div className="relative z-10 space-y-10">
+                      <div className="space-y-4">
+                          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 text-[10px] font-bold uppercase tracking-widest mb-4">
+                              <Star className="w-3 h-3 fill-current" /> Members Only Access
+                          </div>
+                          <h2 className="text-5xl md:text-7xl font-serif font-black text-white tracking-tighter uppercase leading-[0.9]">
+                              Join The <br/>
+                              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">Vibe Club</span>
+                          </h2>
+                          <p className="text-gray-400 max-w-lg mx-auto text-lg font-light">
+                              Unlock early access to limited drops, secret sales, and priority shipping.
+                          </p>
+                      </div>
+
+                      <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
+                          <div className="flex-1 relative">
+                              <input 
+                                  type="email" 
+                                  placeholder="EMAIL ADDRESS" 
+                                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold tracking-wider text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500 focus:bg-black transition-all uppercase"
+                              />
+                          </div>
+                          <div className="flex-1 relative">
+                              <input 
+                                  type="tel" 
+                                  placeholder="PHONE (WHATSAPP)" 
+                                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold tracking-wider text-white placeholder:text-gray-600 focus:outline-none focus:border-yellow-500 focus:bg-black transition-all uppercase"
+                              />
+                          </div>
+                          <Button className="h-auto rounded-xl px-8 py-5 bg-gradient-to-r from-[#BF953F] to-[#B38728] text-black font-black tracking-widest hover:scale-105 transition-all shadow-[0_0_20px_rgba(191,149,63,0.3)]">
+                              JOIN CLUB
+                          </Button>
+                      </div>
+
+                      <p className="text-[10px] text-gray-600 uppercase tracking-widest pt-4">
+                          By joining, you agree to our terms. No spam, just vibe.
+                      </p>
+
+                      {/* --- SOCIAL LINKS SECTION --- */}
                 <div className="mt-10 pt-8 border-t border-white/10">
-                    <p className="text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">Or Follow Us On</p>
+                    <p className="text-sm font-bold text-gray-400 mb-10 uppercase tracking-widest">Or Follow Us On</p>
                     <div className="flex justify-center gap-6">
                         <Link href="https://www.facebook.com/share/1GuPfSmkZs/" target="_blank" className="group flex items-center gap-2 text-gray-400 hover:text-blue-500 transition">
                             <div className="p-3 bg-white/5 rounded-full group-hover:bg-blue-500/20 transition">
@@ -396,8 +409,12 @@ const PremiumNewsletter = () => {
                     </div>
                 </div>
 
-            </div>
-        </section>
+                  </div>
+              </div>
+
+              
+          </div>
+      </section>
     )
 }
 
@@ -438,22 +455,9 @@ export default function Home() {
 
       {/* 4. TRENDING HEAT (Paginated 4 items at a time) */}
       <section className="py-12 md:py-24 px-6 max-w-7xl mx-auto relative z-10">
-         {/* NAVIGATION ARROWS (Outside the grid, centered vertically) */}
-         <button 
-            onClick={prevTrending}
-            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 rounded-full border border-white/10 bg-black/50 hover:bg-white hover:text-black transition items-center justify-center z-20 backdrop-blur-sm"
-         >
-            <ChevronLeft className="w-6 h-6" />
-         </button>
-         <button 
-            onClick={nextTrending}
-            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 rounded-full border border-white/10 bg-black/50 hover:bg-white hover:text-black transition items-center justify-center z-20 backdrop-blur-sm"
-         >
-            <ChevronRight className="w-6 h-6" />
-         </button>
-
+         
          {/* HEADER */}
-         <div className="flex justify-between items-end mb-16">
+         <div className="flex justify-between items-end mb-8 md:mb-16">
             <div>
                <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter">
                   TRENDING HEAT <span className="text-yellow-500">.</span>
@@ -462,47 +466,64 @@ export default function Home() {
                   Top rated picks by our customers this week.
                </p>
             </div>
-            <Link 
-                href="/shop" 
-                className="hidden md:flex items-center gap-2 text-sm font-bold border-b border-white/30 pb-1 hover:border-white hover:text-yellow-400 transition"
-            >
-               VIEW ALL <ArrowRight className="w-4 h-4" />
-            </Link>
          </div>
          
-         {/* PRODUCT GRID (Animated Swap) */}
-         <div className="min-h-[400px]">
+         {/* ========================================= */}
+         {/* MOBILE VIEW: Horizontal Snap Scroll (2 Cards) */}
+         {/* ========================================= */}
+         <div className="md:hidden flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 -mx-6 px-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {FEATURED_PRODUCTS.map((product) => (
+                <div key={product.id} className="min-w-[46%] snap-start">
+                    <ProductCard product={product} />
+                </div>
+            ))}
+         </div>
+
+         {/* ========================================= */}
+         {/* DESKTOP VIEW: Animated Grid (4 Cards + Nav) */}
+         {/* ========================================= */}
+         <div className="hidden md:block min-h-[400px] relative">
+            
+            {/* DESKTOP NAVIGATION ARROWS */}
+            <button 
+               onClick={prevTrending}
+               className="absolute left-0 top-1/2 -translate-x-12 -translate-y-1/2 w-12 h-12 rounded-full border border-white/10 bg-black/50 hover:bg-white hover:text-black transition flex items-center justify-center z-20 backdrop-blur-sm"
+            >
+               <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button 
+               onClick={nextTrending}
+               className="absolute right-0 top-1/2 translate-x-12 -translate-y-1/2 w-12 h-12 rounded-full border border-white/10 bg-black/50 hover:bg-white hover:text-black transition flex items-center justify-center z-20 backdrop-blur-sm"
+            >
+               <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* DESKTOP GRID */}
             <AnimatePresence mode="wait">
-                <motion.div
-                    key={trendingPage}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8"
-                >
-                    {currentTrendingProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
-                </motion.div>
+               <motion.div
+                  key={trendingPage}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-4 gap-8"
+               >
+                  {currentTrendingProducts.map((product) => (
+                     <ProductCard key={product.id} product={product} />
+                  ))}
+               </motion.div>
             </AnimatePresence>
          </div>
 
-         {/* Mobile Navigation (Since side arrows are hidden on mobile) */}
-         <div className="mt-8 flex gap-4 justify-center md:hidden">
-            <button onClick={prevTrending} className="p-3 border border-white/20 rounded-full hover:bg-white hover:text-black"><ChevronLeft className="w-5 h-5"/></button>
-            <button onClick={nextTrending} className="p-3 border border-white/20 rounded-full hover:bg-white hover:text-black"><ChevronRight className="w-5 h-5"/></button>
-         </div>
-
-         <div className="mt-8 flex justify-center md:hidden">
+         {/* Mobile View All Button */}
+         {/* <div className="mt-4 flex justify-center md:hidden">
             <Link href="/shop">
-                <button className="px-8 py-3 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition">
-                    View All Products
-                </button>
+               <button className="px-8 py-3 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition">
+                  View All Products
+               </button>
             </Link>
-         </div>
+         </div> */}
       </section>
-
       {/* 5. SPOTLIGHT SECTION (Swappable) */}
       <SpotlightSection />
 

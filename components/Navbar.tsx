@@ -191,7 +191,7 @@ export default function Navbar() {
 
       {/* LOGO */}
       <Link href="/" className="flex items-center gap-3 cursor-pointer">
-         <Image src="/onlylogo.png" alt="Sole Vault icon" width={40} height={40} className="w-8 md:w-10 h-auto opacity-90" />
+         <Image src="/vibecart-logo-transparent.png" alt="Sole Vault icon" width={50} height={50} className="w-8 md:w-10 h-auto opacity-90" />
          <h1 className="text-xl md:text-2xl font-bold tracking-widest uppercase flex items-center font-serif">
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-[#FBF5B7] via-[#BF953F] to-[#AA771C] drop-shadow-[0_0_10px_rgba(234,179,8,0.2)]">
                VIBE

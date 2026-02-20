@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useAuth, useClerk } from "@clerk/nextjs"; // <--- CLERK HOOKS
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
@@ -31,16 +30,17 @@ export default function CartSidebar() {
 
   return (
     <Sheet open={isCartOpen} onOpenChange={toggleCart}>
-      <SheetContent className="bg-[#0a0a0a] border-l border-white/10 text-white w-full sm:w-[400px] flex flex-col p-0">
+      <SheetContent className="bg-[#0a0a0a] border-l border-white/10 text-white w-full sm:w-[400px] flex flex-col p-0 h-full">
         
-        <SheetHeader className="p-6 border-b border-white/10">
+        {/* HEADER (Fixed at top) */}
+        <SheetHeader className="p-6 border-b border-white/10 shrink-0">
           <SheetTitle className="text-white flex items-center gap-2">
             <ShoppingBag className="w-5 h-5" /> YOUR VAULT
           </SheetTitle>
         </SheetHeader>
 
-        {/* CART ITEMS LIST */}
-        <ScrollArea className="flex-1 p-6">
+        {/* CART ITEMS LIST (Scrollable Middle Section) */}
+        <div className="flex-1 overflow-y-auto p-6 overscroll-y-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center space-y-4 text-gray-500 mt-20">
                <ShoppingBag className="w-16 h-16 opacity-20" />
@@ -82,11 +82,11 @@ export default function CartSidebar() {
               ))}
             </div>
           )}
-        </ScrollArea>
+        </div>
 
-        {/* FOOTER TOTALS */}
+        {/* FOOTER TOTALS (Fixed at bottom) */}
         {cart.length > 0 && (
-          <div className="p-6 bg-[#050505] border-t border-white/10 space-y-4">
+          <div className="p-6 bg-[#050505] border-t border-white/10 space-y-4 shrink-0">
             <div className="space-y-2">
               <div className="flex justify-between text-sm text-gray-400">
                 <span>Subtotal</span>

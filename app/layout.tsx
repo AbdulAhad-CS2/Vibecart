@@ -4,7 +4,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll"; 
 import { CartProvider } from "@/context/CartContext";
-import { Suspense } from "react"; // 1. Import Suspense
+import { Suspense } from "react"; 
+import WelcomePopup from "@/components/WelcomePopup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <ClerkProvider publishableKey="pk_test_cnVsaW5nLW1hbW1vdGgtMzIuY2xlcmsuYWNjb3VudHMuZGV2JA">
       <html lang="en" className="scroll-smooth"> 
         <body className={inter.className}>
+          <WelcomePopup />
           <CartProvider>
             {/* 2. Wrap SmoothScroll in Suspense to fix the build error */}
             <Suspense fallback={null}>

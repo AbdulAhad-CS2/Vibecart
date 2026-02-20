@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useCart } from "@/context/CartContext";
-import { motion } from "framer-motion";
-import { Loader2, CheckCircle, ShieldCheck, Lock, CreditCard } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, CheckCircle, ShieldCheck, MapPin, Phone, Banknote, Mail } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -15,6 +15,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+// --- MOCK AREA DATA FOR AUTO-SUGGEST ---
+const CITY_AREAS: Record<string, string[]> = {
+  Karachi: ["DHA Phase 1-8", "Clifton", "Bahria Town", "Gulshan-e-Iqbal", "North Nazimabad", "PECHS", "Malir", "Tariq Road", "Korangi", "Saddar"],
+  Lahore: ["DHA Phase 1-8", "Gulberg", "Johar Town", "Bahria Town", "Model Town", "Wapda Town", "Cantonment", "Iqbal Town", "Askari"],
+  Islamabad: ["F-6", "F-7", "F-8", "F-11", "E-7", "G-11", "G-13", "DHA Phase 1-5", "Bahria Town", "Blue Area", "I-8"],
+};
 
 export default function CheckoutPage() {
   const { user, isLoaded, isSignedIn } = useUser();
@@ -24,27 +31,74 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Redirect if not signed in (Double check security)
+  // Form States
+  const [city, setCity] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  
+  // Auto-Suggest States
+  const [filteredAreas, setFilteredAreas] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // 1. Redirect if not signed in
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       router.push("/");
     }
   }, [isLoaded, isSignedIn, router]);
 
+  // 2. Auto-fill City from Welcome Popup
+  useEffect(() => {
+    const savedCity = localStorage.getItem("vibe_user_city");
+    if (savedCity && Object.keys(CITY_AREAS).includes(savedCity)) {
+      setCity(savedCity);
+    }
+  }, []);
+
+  // 3. Handle Address Auto-Suggest Logic
+  useEffect(() => {
+    if (!city || !address) {
+      setFilteredAreas([]);
+      return;
+    }
+    const areas = CITY_AREAS[city] || [];
+    const matches = areas.filter(area => 
+      area.toLowerCase().includes(address.toLowerCase())
+    );
+    setFilteredAreas(matches);
+  }, [address, city]);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectArea = (area: string) => {
+    setAddress(area + ", ");
+    setShowSuggestions(false);
+  };
+
   // --- HANDLE ORDER SUBMISSION ---
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
 
-    // Simulate API Call / Payment Processing
+    // Simulate API Call / Order Processing
     setTimeout(() => {
       setIsProcessing(false);
       setIsSuccess(true);
-      clearCart(); // Empty the cart
+      clearCart();
     }, 2000);
   };
 
-  if (!isLoaded || !isSignedIn) return null; // or a loading spinner
+  if (!isLoaded || !isSignedIn) return null;
 
   // --- SUCCESS VIEW ---
   if (isSuccess) {
@@ -62,13 +116,13 @@ export default function CheckoutPage() {
             </div>
             <h1 className="text-3xl font-bold tracking-tighter">ORDER CONFIRMED</h1>
             <p className="text-gray-400">
-              Thank you, {user?.firstName}! Your order <span className="text-white font-mono">#SV-{Math.floor(Math.random() * 10000)}</span> has been placed successfully.
+              Thank you, {user?.firstName}! Your order <span className="text-white font-mono">#SV-{Math.floor(Math.random() * 10000)}</span> will be shipped via Cash on Delivery.
             </p>
             <div className="bg-white/5 p-4 rounded-lg text-sm text-gray-300">
                Check your email at <span className="text-blue-400">{user?.primaryEmailAddress?.emailAddress}</span> for tracking details.
             </div>
             <Link href="/product">
-              <Button className="w-full h-12 bg-white text-black hover:bg-blue-600 hover:text-white font-bold rounded-full mt-4">
+              <Button className="w-full h-12 bg-white text-black hover:bg-yellow-500 font-bold rounded-full mt-4 transition-colors">
                 CONTINUE SHOPPING
               </Button>
             </Link>
@@ -85,9 +139,9 @@ export default function CheckoutPage() {
       <main className="min-h-screen bg-[#050505] text-white flex flex-col">
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center gap-4">
-           <h2 className="text-2xl font-bold">Your cart is empty</h2>
+           <h2 className="text-2xl font-bold">Your vault is empty</h2>
            <Link href="/product">
-             <Button>Browse Products</Button>
+             <Button className="bg-[#BF953F] hover:bg-[#B38728] text-black font-bold">Browse Collection</Button>
            </Link>
         </div>
         <Footer />
@@ -101,7 +155,9 @@ export default function CheckoutPage() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <h1 className="text-3xl md:text-4xl font-black tracking-tighter mb-8">CHECKOUT</h1>
+        <h1 className="text-3xl md:text-5xl font-serif font-black uppercase tracking-tighter mb-8 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">
+          Secure Checkout
+        </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           
@@ -109,75 +165,119 @@ export default function CheckoutPage() {
           <div className="lg:col-span-2 space-y-8">
             
             {/* 1. SHIPPING INFO */}
-            <Card className="bg-[#0a0a0a] border-white/10 text-white">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                   <ShieldCheck className="w-5 h-5 text-blue-500" /> Shipping Information
+            <Card className="bg-[#0a0a0a] border-white/10 text-white rounded-2xl overflow-hidden shadow-xl">
+              <CardHeader className="bg-white/[0.02] border-b border-white/5">
+                <CardTitle className="flex items-center gap-2 text-lg uppercase tracking-widest text-yellow-500 font-bold">
+                   <MapPin className="w-5 h-5" /> Shipping Information
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <form id="checkout-form" onSubmit={handlePlaceOrder} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="pt-6">
+                <form id="checkout-form" onSubmit={handlePlaceOrder} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   
+                   {/* Name Fields */}
                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-500">FIRST NAME</label>
-                      <Input defaultValue={user?.firstName || ""} className="bg-white/5 border-white/10 text-white" required />
+                      <label className="text-xs font-bold text-gray-500 tracking-wider">FIRST NAME</label>
+                      <Input defaultValue={user?.firstName || ""} className="bg-white/5 border-white/10 text-white h-12" required />
                    </div>
                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-500">LAST NAME</label>
-                      <Input defaultValue={user?.lastName || ""} className="bg-white/5 border-white/10 text-white" required />
+                      <label className="text-xs font-bold text-gray-500 tracking-wider">LAST NAME</label>
+                      <Input defaultValue={user?.lastName || ""} className="bg-white/5 border-white/10 text-white h-12" required />
                    </div>
+
+                   {/* Email & Phone */}
+                   <div className="space-y-2 md:col-span-1">
+                      <label className="text-xs font-bold text-gray-500 tracking-wider">EMAIL ADDRESS *</label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        <Input defaultValue={user?.primaryEmailAddress?.emailAddress || ""} className="bg-white/5 border-white/10 text-white pl-10 h-12" required />
+                      </div>
+                   </div>
+                   <div className="space-y-2 md:col-span-1">
+                      <label className="text-xs font-bold text-gray-500 tracking-wider">PHONE NUMBER *</label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="03XX-XXXXXXX" className="bg-white/5 border-white/10 text-white pl-10 h-12" required />
+                      </div>
+                   </div>
+
+                   {/* City Dropdown */}
                    <div className="space-y-2 md:col-span-2">
-                      <label className="text-xs font-bold text-gray-500">EMAIL</label>
-                      <Input defaultValue={user?.primaryEmailAddress?.emailAddress || ""} className="bg-white/5 border-white/10 text-white" disabled />
+                      <label className="text-xs font-bold text-gray-500 tracking-wider">CITY *</label>
+                      <select 
+                        value={city} 
+                        onChange={(e) => { setCity(e.target.value); setAddress(""); }} 
+                        required 
+                        className="w-full h-12 bg-[#111] border border-white/10 text-white rounded-md px-4 focus:outline-none focus:border-yellow-500 transition-colors cursor-pointer appearance-none"
+                      >
+                        <option value="" disabled>Select City</option>
+                        {Object.keys(CITY_AREAS).map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
                    </div>
-                   <div className="space-y-2 md:col-span-2">
-                      <label className="text-xs font-bold text-gray-500">ADDRESS</label>
-                      <Input placeholder="123 Street Name" className="bg-white/5 border-white/10 text-white" required />
+
+                   {/* Address with Auto-Suggest */}
+                   <div className="space-y-2 md:col-span-2 relative" ref={wrapperRef}>
+                      <label className="text-xs font-bold text-gray-500 tracking-wider">STREET ADDRESS *</label>
+                      <Input 
+                        value={address}
+                        onChange={(e) => {
+                          setAddress(e.target.value);
+                          setShowSuggestions(true);
+                        }}
+                        onFocus={() => setShowSuggestions(true)}
+                        placeholder={city ? `e.g. House 1, Street 2, ${CITY_AREAS[city][0]}` : "Select a city first"} 
+                        className="bg-white/5 border-white/10 text-white h-12" 
+                        required 
+                        disabled={!city}
+                      />
+                      
+                      {/* Suggestions Dropdown */}
+                      <AnimatePresence>
+                        {showSuggestions && filteredAreas.length > 0 && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="absolute z-50 w-full mt-1 bg-[#1a1a1a] border border-white/10 rounded-md shadow-2xl overflow-hidden max-h-48 overflow-y-auto"
+                          >
+                            {filteredAreas.map(area => (
+                              <div 
+                                key={area} 
+                                onClick={() => selectArea(area)}
+                                className="px-4 py-3 cursor-pointer hover:bg-yellow-500/20 hover:text-yellow-500 text-sm text-gray-300 transition-colors border-b border-white/5 last:border-0"
+                              >
+                                {area}, {city}
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                    </div>
-                   <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-500">CITY</label>
-                      <Input placeholder="City" className="bg-white/5 border-white/10 text-white" required />
-                   </div>
-                   <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-500">ZIP CODE</label>
-                      <Input placeholder="00000" className="bg-white/5 border-white/10 text-white" required />
-                   </div>
+
                 </form>
               </CardContent>
             </Card>
 
-            {/* 2. PAYMENT INFO */}
-            <Card className="bg-[#0a0a0a] border-white/10 text-white">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                   <CreditCard className="w-5 h-5 text-blue-500" /> Payment Details
+            {/* 2. PAYMENT INFO (COD ONLY) */}
+            <Card className="bg-[#0a0a0a] border-white/10 text-white rounded-2xl overflow-hidden shadow-xl">
+              <CardHeader className="bg-white/[0.02] border-b border-white/5">
+                <CardTitle className="flex items-center gap-2 text-lg uppercase tracking-widest text-yellow-500 font-bold">
+                   <ShieldCheck className="w-5 h-5" /> Payment Method
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                 <div className="flex gap-4 mb-4">
-                    <div className="flex-1 bg-blue-600/20 border border-blue-500 text-center py-3 rounded-lg text-sm font-bold text-blue-400 cursor-pointer">
-                       Credit Card
+              <CardContent className="pt-6">
+                 <div className="p-4 border-2 border-yellow-500 bg-yellow-500/10 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                       <div className="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500">
+                          <Banknote className="w-6 h-6" />
+                       </div>
+                       <div>
+                          <h4 className="font-bold text-white text-lg">Cash on Delivery (COD)</h4>
+                          <p className="text-sm text-gray-400">Pay securely upon receiving your package.</p>
+                       </div>
                     </div>
-                    <div className="flex-1 bg-white/5 border border-white/10 text-center py-3 rounded-lg text-sm font-bold text-gray-500 cursor-not-allowed">
-                       PayPal
-                    </div>
-                 </div>
-                 
-                 <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500">CARD NUMBER</label>
-                    <div className="relative">
-                       <Input placeholder="0000 0000 0000 0000" className="bg-white/5 border-white/10 text-white pl-10" required />
-                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                    </div>
-                 </div>
-                 <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                       <label className="text-xs font-bold text-gray-500">EXPIRY</label>
-                       <Input placeholder="MM/YY" className="bg-white/5 border-white/10 text-white" required />
-                    </div>
-                    <div className="space-y-2">
-                       <label className="text-xs font-bold text-gray-500">CVC</label>
-                       <Input placeholder="123" className="bg-white/5 border-white/10 text-white" required />
-                    </div>
+                    <div className="w-6 h-6 rounded-full border-4 border-yellow-500 bg-black" />
                  </div>
               </CardContent>
             </Card>
@@ -186,21 +286,21 @@ export default function CheckoutPage() {
 
           {/* RIGHT COLUMN: SUMMARY */}
           <div className="lg:col-span-1">
-             <div className="sticky top-24 bg-[#0a0a0a] border border-white/10 rounded-xl p-6 space-y-6">
-                <h3 className="font-bold text-lg">Order Summary</h3>
+             <div className="sticky top-24 bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 space-y-6 shadow-2xl">
+                <h3 className="font-serif font-bold text-xl uppercase tracking-widest text-white border-b border-white/10 pb-4">Order Summary</h3>
                 
-                <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10">
                    {cart.map((item) => (
-                      <div key={item.cartId} className="flex gap-4">
-                         <div className="relative w-16 h-16 bg-white/5 rounded border border-white/10 flex-shrink-0">
-                            <Image src={item.image} alt={item.name} fill className="object-contain p-1" />
+                      <div key={item.cartId} className="flex gap-4 group">
+                         <div className="relative w-16 h-16 bg-white/5 rounded-lg border border-white/10 flex-shrink-0 group-hover:border-yellow-500/50 transition-colors">
+                            <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
                          </div>
-                         <div className="flex-1">
-                            <h4 className="text-sm font-bold line-clamp-1">{item.name}</h4>
-                            <p className="text-xs text-gray-400">{item.brand}</p>
-                            <div className="flex justify-between mt-1 text-sm">
-                               <span className="text-gray-500">x{item.quantity}</span>
-                               <span className="font-bold">${item.price * item.quantity}</span>
+                         <div className="flex-1 flex flex-col justify-center">
+                            <h4 className="text-sm font-bold line-clamp-1 text-white">{item.name}</h4>
+                            <p className="text-xs text-gray-500 uppercase tracking-widest">{item.brand}</p>
+                            <div className="flex justify-between mt-2 text-sm items-center">
+                               <span className="text-gray-400 bg-white/5 px-2 py-0.5 rounded text-[10px]">Qty: {item.quantity}</span>
+                               <span className="font-bold text-yellow-500">Rs. {(item.price * item.quantity).toLocaleString()}</span>
                             </div>
                          </div>
                       </div>
@@ -209,26 +309,22 @@ export default function CheckoutPage() {
 
                 <Separator className="bg-white/10" />
 
-                <div className="space-y-2 text-sm">
+                <div className="space-y-3 text-sm">
                    <div className="flex justify-between text-gray-400">
                       <span>Subtotal</span>
-                      <span>${cartTotal}</span>
+                      <span className="text-white">Rs. {cartTotal.toLocaleString()}</span>
                    </div>
                    <div className="flex justify-between text-gray-400">
-                      <span>Shipping</span>
-                      <span className="text-green-400">Free</span>
-                   </div>
-                   <div className="flex justify-between text-gray-400">
-                      <span>Tax (Est.)</span>
-                      <span>${(cartTotal * 0.08).toFixed(2)}</span>
+                      <span>Delivery (Nationwide)</span>
+                      <span className="text-green-400 font-bold uppercase tracking-widest text-xs">Free</span>
                    </div>
                 </div>
 
                 <Separator className="bg-white/10" />
 
-                <div className="flex justify-between text-xl font-black">
-                   <span>TOTAL</span>
-                   <span>${(cartTotal * 1.08).toFixed(2)}</span>
+                <div className="flex justify-between items-center">
+                   <span className="text-gray-400 uppercase tracking-widest text-sm">Total</span>
+                   <span className="text-3xl font-serif font-black text-white">Rs. {cartTotal.toLocaleString()}</span>
                 </div>
 
                 {/* THE SUBMIT BUTTON - LINKED TO THE FORM ID */}
@@ -236,17 +332,17 @@ export default function CheckoutPage() {
                   type="submit" 
                   form="checkout-form"
                   disabled={isProcessing}
-                  className="w-full h-12 bg-white text-black hover:bg-blue-600 hover:text-white font-bold rounded-full transition-all text-lg"
+                  className="w-full h-14 bg-gradient-to-r from-[#BF953F] to-[#B38728] hover:from-[#FCF6BA] hover:to-[#BF953F] text-black font-black uppercase tracking-[0.2em] rounded-xl transition-all shadow-[0_0_20px_rgba(191,149,63,0.3)]"
                 >
                    {isProcessing ? (
                      <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> PROCESSING...</>
                    ) : (
-                     "PLACE ORDER"
+                     "CONFIRM ORDER"
                    )}
                 </Button>
 
-                <p className="text-xs text-center text-gray-500">
-                   By placing this order, you agree to the Terms of Service and Privacy Policy.
+                <p className="text-[10px] text-center text-gray-600 uppercase tracking-widest">
+                   By confirming, you agree to our Terms & Return Policy.
                 </p>
              </div>
           </div>

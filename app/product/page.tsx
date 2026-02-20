@@ -327,142 +327,145 @@ function ProductFilters({ searchQuery, setSearchQuery, selectedBrands, setSelect
 // ==========================================
 
 // ==========================================
-// 5. PRODUCT CONTENT (UPDATED LOGIC)
+// 5. PRODUCT CONTENT (FIXED GRID & STICKY FILTER)
 // ==========================================
 
-function ProductContent({ context, toggleContext }: { context: "watch" | "perfume" | null, toggleContext: () => void }) {
-  const searchParams = useSearchParams();
+// function ProductContent({ context, toggleContext }: { context: "watch" | "perfume" | null, toggleContext: () => void }) {
+//   const searchParams = useSearchParams();
   
-  // State for Filters
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+//   // State for Filters
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+//   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+//   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
-  // --- AUTOMATIC RESET LOGIC ---
-  useEffect(() => {
-      // 1. Always clear Search and Brands when context changes
-      setSearchQuery("");
-      setSelectedBrands([]);
+//   // --- AUTOMATIC RESET LOGIC ---
+//   useEffect(() => {
+//       setSearchQuery("");
+//       setSelectedBrands([]);
 
-      // 2. Handle Categories smartly:
-      // If the URL has a category AND the URL context matches the current context (e.g. landing from Home Page), keep it.
-      // Otherwise (e.g. manually clicking the Switch Button), clear the categories too.
-      const urlCategory = searchParams.get("category");
-      const urlContext = searchParams.get("context");
+//       const urlCategory = searchParams.get("category");
+//       const urlContext = searchParams.get("context");
 
-      if (urlCategory && urlContext === context) {
-          setSelectedCategories([decodeURIComponent(urlCategory)]);
-      } else {
-          setSelectedCategories([]);
-      }
-  }, [context, searchParams]); 
-  // -----------------------------
+//       if (urlCategory && urlContext === context) {
+//           setSelectedCategories([decodeURIComponent(urlCategory)]);
+//       } else {
+//           setSelectedCategories([]);
+//       }
+//   }, [context, searchParams]); 
 
-  const filteredProducts = ALL_PRODUCTS.filter((product) => {
-    if (context && product.type !== context) return false;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
-    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
-    return matchesSearch && matchesBrand && matchesCategory;
-  });
+//   const filteredProducts = ALL_PRODUCTS.filter((product) => {
+//     if (context && product.type !== context) return false;
+//     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+//     const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+//     const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
+//     return matchesSearch && matchesBrand && matchesCategory;
+//   });
 
-  const containerVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.1 } }
-  };
+//   const containerVariants = {
+//     hidden: {},
+//     visible: { transition: { staggerChildren: 0.1 } }
+//   };
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
-  };
+//   const cardVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
+//   };
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 flex flex-col lg:flex-row gap-12 min-h-screen relative">
+//   return (
+//     <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 flex flex-col lg:flex-row gap-8 lg:gap-12 min-h-screen relative">
        
-       {/* FLOATING SWITCH BUTTON */}
-       <motion.div 
-            initial={{ opacity: 0, y: 50 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            className="fixed bottom-10 right-6 z-[100]"
-       >
-            <Button 
-                onClick={toggleContext}
-                className="h-14 px-8 rounded-full bg-gradient-to-r from-[#BF953F] to-[#B38728] hover:from-[#FCF6BA] hover:to-[#BF953F] text-black font-black text-xs tracking-[0.2em] shadow-[0_0_40px_rgba(191,149,63,0.4)] transition-all hover:scale-105 flex items-center gap-3 border-2 border-white/10"
-            >
-                <ArrowRightLeft className="w-5 h-5" />
-                SWITCH TO {context === "watch" ? "PERFUMES" : "WATCHES"}
-            </Button>
-       </motion.div>
+//        {/* FLOATING SWITCH BUTTON */}
+//        <motion.div 
+//             initial={{ opacity: 0, y: 50 }} 
+//             animate={{ opacity: 1, y: 0 }} 
+//             className="fixed bottom-6 right-4 md:bottom-10 md:right-6 z-[100]"
+//        >
+//             <Button 
+//                 onClick={toggleContext}
+//                 className="h-12 md:h-14 px-6 md:px-8 rounded-full bg-gradient-to-r from-[#BF953F] to-[#B38728] hover:from-[#FCF6BA] hover:to-[#BF953F] text-black font-black text-[10px] md:text-xs tracking-[0.2em] shadow-[0_0_40px_rgba(191,149,63,0.4)] transition-all hover:scale-105 flex items-center gap-2 md:gap-3 border-2 border-white/10"
+//             >
+//                 <ArrowRightLeft className="w-4 h-4 md:w-5 md:h-5" />
+//                 SWITCH TO {context === "watch" ? "PERFUMES" : "WATCHES"}
+//             </Button>
+//        </motion.div>
 
-       {/* MOBILE FILTER HEADER */}
-       <div className="lg:hidden flex items-center justify-between mb-4 sticky top-20 z-30 bg-[#050505]/80 backdrop-blur-md p-4 border-b border-white/10">
-          <span className="text-gray-400 text-sm font-serif">{filteredProducts.length} Results</span>
-          <Button variant="outline" onClick={() => setIsMobileFiltersOpen(true)} className="border-white/20 bg-white/5 text-white hover:bg-white/10 gap-2 rounded-full">
-             <Filter className="w-4 h-4" /> Filters
-          </Button>
-       </div>
+//        {/* ======================================================== */}
+//        {/* MOBILE FILTER HEADER - FIXED STICKY POSITION */}
+//        {/* Changes: Solid background, z-[60], and top-[60px] to sit flush under navbar */}
+//        {/* ======================================================== */}
+//        <div className="lg:hidden flex items-center justify-between sticky top-[0px] z-[60] bg-[#050505] p-4 border-b border-white/10 -mx-4 px-6 shadow-xl mb-6">
+//           <span className="text-white text-sm font-serif font-bold tracking-widest">{filteredProducts.length} Results</span>
+//           <Button variant="outline" onClick={() => setIsMobileFiltersOpen(true)} className="border-white/20 bg-white/5 text-white hover:bg-white hover:text-black transition-colors gap-2 rounded-full h-9">
+//              <Filter className="w-4 h-4" /> Filters
+//           </Button>
+//        </div>
 
-       {/* DESKTOP SIDEBAR */}
-       <aside className="hidden lg:block w-64 space-y-8 flex-shrink-0 sticky top-24 h-fit">
-           <ProductFilters 
-               context={context} 
-               searchQuery={searchQuery} 
-               setSearchQuery={setSearchQuery} 
-               selectedBrands={selectedBrands} 
-               setSelectedBrands={setSelectedBrands} 
-               selectedCategories={selectedCategories} 
-               setSelectedCategories={setSelectedCategories} 
-           />
-       </aside>
+//        {/* DESKTOP SIDEBAR */}
+//        <aside className="hidden lg:block w-64 space-y-8 flex-shrink-0 sticky top-24 h-fit">
+//            <ProductFilters 
+//                context={context} 
+//                searchQuery={searchQuery} 
+//                setSearchQuery={setSearchQuery} 
+//                selectedBrands={selectedBrands} 
+//                setSelectedBrands={setSelectedBrands} 
+//                selectedCategories={selectedCategories} 
+//                setSelectedCategories={setSelectedCategories} 
+//            />
+//        </aside>
 
-       {/* MOBILE FILTER DRAWER */}
-       <AnimatePresence>
-         {isMobileFiltersOpen && (
-           <>
-             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileFiltersOpen(false)} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden" />
-             <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed top-0 right-0 h-full w-[85vw] max-w-[350px] bg-[#0a0a0a] border-l border-white/10 p-6 z-50 lg:hidden overflow-y-auto shadow-2xl">
-                 <ProductFilters context={context} searchQuery={searchQuery} setSearchQuery={setSearchQuery} selectedBrands={selectedBrands} setSelectedBrands={setSelectedBrands} selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
-                 <Button className="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-6 rounded-full mt-8" onClick={() => setIsMobileFiltersOpen(false)}>SHOW RESULTS</Button>
-             </motion.div>
-           </>
-         )}
-       </AnimatePresence>
+//        {/* MOBILE FILTER DRAWER */}
+//        <AnimatePresence>
+//          {isMobileFiltersOpen && (
+//            <>
+//              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileFiltersOpen(false)} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[999] lg:hidden" />
+//              <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed top-0 right-0 h-full w-[85vw] max-w-[350px] bg-[#0a0a0a] border-l border-white/10 p-6 z-[1000] lg:hidden overflow-y-auto shadow-2xl">
+//                  <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+//                      <h3 className="font-serif font-bold text-xl text-white">FILTERS</h3>
+//                      <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 bg-white/5 rounded-full text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>
+//                  </div>
+//                  <ProductFilters context={context} searchQuery={searchQuery} setSearchQuery={setSearchQuery} selectedBrands={selectedBrands} setSelectedBrands={setSelectedBrands} selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
+//                  <Button className="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-6 rounded-full mt-8 shadow-lg" onClick={() => setIsMobileFiltersOpen(false)}>SHOW {filteredProducts.length} RESULTS</Button>
+//              </motion.div>
+//            </>
+//          )}
+//        </AnimatePresence>
 
-       {/* PRODUCT GRID */}
-       <div className="flex-1">
-             <div className="mb-8 border-b border-white/10 pb-4">
-                <h2 className="text-4xl font-serif font-bold text-white mb-2">{context === "watch" ? "TIMEPIECES" : context === "perfume" ? "FRAGRANCES" : "INVENTORY"}</h2>
-                <p className="text-gray-400 text-sm">Showing {filteredProducts.length} curated items</p>
-             </div>
+//        {/* PRODUCT GRID */}
+//        <div className="flex-1">
+//              <div className="hidden lg:block mb-8 border-b border-white/10 pb-4">
+//                 <h2 className="text-4xl font-serif font-bold text-white mb-2">{context === "watch" ? "TIMEPIECES" : context === "perfume" ? "FRAGRANCES" : "INVENTORY"}</h2>
+//                 <p className="text-gray-400 text-sm">Showing {filteredProducts.length} curated items</p>
+//              </div>
              
-             {filteredProducts.length > 0 ? (
-                <motion.div 
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" 
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    // Important: Using context in key forces a re-render/animation on switch
-                    key={`${context}-${selectedBrands}-${selectedCategories}`}
-                >
-                  {filteredProducts.map((product) => (
-                    <motion.div key={product.id} variants={cardVariants}>
-                        <ProductCard product={product} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-             ) : (
-                 <div className="h-full flex flex-col items-center justify-center py-20 text-gray-500 space-y-4">
-                    <Search className="w-12 h-12 opacity-20" />
-                    <p>No products found matching your criteria.</p>
-                    <Button variant="link" className="text-yellow-500" onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setSearchQuery(""); }}>Clear all filters</Button>
-                 </div>
-             )}
-       </div>
-    </div>
-  );
-}
-
+//              {filteredProducts.length > 0 ? (
+//                 <motion.div 
+//                     /* ======================================================== */
+//                     /* CHANGED HERE: grid-cols-2 forces exactly 2 items side-by-side on mobile */
+//                     /* ======================================================== */
+//                     className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 lg:gap-8" 
+//                     variants={containerVariants}
+//                     initial="hidden"
+//                     animate="visible"
+//                     key={`${context}-${selectedBrands}-${selectedCategories}`}
+//                 >
+//                   {filteredProducts.map((product) => (
+//                     <motion.div key={product.id} variants={cardVariants}>
+//                         <ProductCard product={product} />
+//                     </motion.div>
+//                   ))}
+//                 </motion.div>
+//              ) : (
+//                  <div className="h-[50vh] flex flex-col items-center justify-center text-gray-500 space-y-4">
+//                     <Search className="w-12 h-12 opacity-20" />
+//                     <p>No products found matching your criteria.</p>
+//                     <Button variant="link" className="text-yellow-500" onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setSearchQuery(""); }}>Clear all filters</Button>
+//                  </div>
+//              )}
+//        </div>
+//     </div>
+//   );
+// }
 // ==========================================
 // 6. MAIN PAGE EXPORT
 // ==========================================
@@ -540,5 +543,212 @@ useEffect(() => {
 
       <Footer />
     </main>
+  );
+}
+
+import { supabase } from "@/lib/supabase"; // Make sure to add this import at the top!
+
+// ==========================================
+// 5. PRODUCT CONTENT (DYNAMIC SUPABASE FETCH)
+// ==========================================
+
+function ProductContent({ context, toggleContext }: { context: "watch" | "perfume" | null, toggleContext: () => void }) {
+  const searchParams = useSearchParams();
+  
+  // Data State
+  const [allProducts, setAllProducts] = useState<ProductWithType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Filter State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // --- FETCH PRODUCTS FROM SUPABASE ---
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Query products, joining images, variants, and their linked collections
+        const { data, error } = await supabase
+          .from("products")
+          .select(`
+            id,
+            title,
+            brand,
+            base_price,
+            product_images ( image_url, is_primary ),
+            product_variants ( color, is_on_sale ),
+            collection_products ( collections ( title, type ) )
+          `)
+          .eq("is_active", true);
+
+        if (error) throw error;
+
+        // Map the raw database data to match your UI's ProductWithType interface
+        const mappedProducts: ProductWithType[] = data.map((item: any) => {
+          // Get primary image, or fallback to the first available image
+          const primaryImg = item.product_images?.find((img: any) => img.is_primary)?.image_url;
+          const fallbackImg = item.product_images?.[0]?.image_url || "/watch-1.png";
+          
+          // Check if any variant of this product is on sale
+          const isSale = item.product_variants?.some((v: any) => v.is_on_sale) || false;
+
+          // Get the collection data (Assuming it belongs to at least one)
+          const collectionData = item.collection_products?.[0]?.collections;
+
+          return {
+            id: item.id.toString(),
+            type: collectionData?.type || "watch", // Defaults to watch if no collection
+            name: item.title,
+            brand: item.brand || "VibeCart", // Uses the new brand column
+            category: collectionData?.title || "Uncategorized",
+            price: item.base_price,
+            image: primaryImg || fallbackImg,
+            colors: item.product_variants?.length 
+              ? [...new Set(item.product_variants.map((v: any) => v.color).filter(Boolean))] as string[]
+              : ["#000"],
+            isSale: isSale,
+            isNew: false // You can make this dynamic later based on created_at dates
+          };
+        });
+
+        setAllProducts(mappedProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // --- AUTOMATIC FILTER RESET LOGIC ---
+  useEffect(() => {
+      setSearchQuery("");
+      setSelectedBrands([]);
+
+      const urlCategory = searchParams.get("category");
+      const urlContext = searchParams.get("context");
+
+      if (urlCategory && urlContext === context) {
+          setSelectedCategories([decodeURIComponent(urlCategory)]);
+      } else {
+          setSelectedCategories([]);
+      }
+  }, [context, searchParams]); 
+
+  // --- CLIENT-SIDE FILTERING ---
+  const filteredProducts = allProducts.filter((product) => {
+    if (context && product.type !== context) return false;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
+    return matchesSearch && matchesBrand && matchesCategory;
+  });
+
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.1 } }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 flex flex-col lg:flex-row gap-8 lg:gap-12 min-h-screen relative">
+       
+       {/* FLOATING SWITCH BUTTON */}
+       <motion.div 
+             initial={{ opacity: 0, y: 50 }} 
+             animate={{ opacity: 1, y: 0 }} 
+             className="fixed bottom-6 right-4 md:bottom-10 md:right-6 z-[100]"
+       >
+            <Button 
+                onClick={toggleContext}
+                className="h-12 md:h-14 px-6 md:px-8 rounded-full bg-gradient-to-r from-[#BF953F] to-[#B38728] hover:from-[#FCF6BA] hover:to-[#BF953F] text-black font-black text-[10px] md:text-xs tracking-[0.2em] shadow-[0_0_40px_rgba(191,149,63,0.4)] transition-all hover:scale-105 flex items-center gap-2 md:gap-3 border-2 border-white/10"
+            >
+                <ArrowRightLeft className="w-4 h-4 md:w-5 md:h-5" />
+                SWITCH TO {context === "watch" ? "PERFUMES" : "WATCHES"}
+            </Button>
+       </motion.div>
+
+       {/* MOBILE FILTER HEADER */}
+       <div className="lg:hidden flex items-center justify-between sticky top-[0px] z-[60] bg-[#050505] p-4 border-b border-white/10 -mx-4 px-6 shadow-xl mb-6">
+          <span className="text-white text-sm font-serif font-bold tracking-widest">{filteredProducts.length} Results</span>
+          <Button variant="outline" onClick={() => setIsMobileFiltersOpen(true)} className="border-white/20 bg-white/5 text-white hover:bg-white hover:text-black transition-colors gap-2 rounded-full h-9">
+             <Filter className="w-4 h-4" /> Filters
+          </Button>
+       </div>
+
+       {/* DESKTOP SIDEBAR */}
+       <aside className="hidden lg:block w-64 space-y-8 flex-shrink-0 sticky top-24 h-fit">
+           <ProductFilters 
+               context={context} 
+               searchQuery={searchQuery} 
+               setSearchQuery={setSearchQuery} 
+               selectedBrands={selectedBrands} 
+               setSelectedBrands={setSelectedBrands} 
+               selectedCategories={selectedCategories} 
+               setSelectedCategories={setSelectedCategories} 
+           />
+       </aside>
+
+       {/* MOBILE FILTER DRAWER */}
+       <AnimatePresence>
+         {isMobileFiltersOpen && (
+           <>
+             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileFiltersOpen(false)} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[999] lg:hidden" />
+             <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed top-0 right-0 h-full w-[85vw] max-w-[350px] bg-[#0a0a0a] border-l border-white/10 p-6 z-[1000] lg:hidden overflow-y-auto shadow-2xl">
+                 <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+                     <h3 className="font-serif font-bold text-xl text-white">FILTERS</h3>
+                     <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2 bg-white/5 rounded-full text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>
+                 </div>
+                 <ProductFilters context={context} searchQuery={searchQuery} setSearchQuery={setSearchQuery} selectedBrands={selectedBrands} setSelectedBrands={setSelectedBrands} selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
+                 <Button className="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-6 rounded-full mt-8 shadow-lg" onClick={() => setIsMobileFiltersOpen(false)}>SHOW {filteredProducts.length} RESULTS</Button>
+             </motion.div>
+           </>
+         )}
+       </AnimatePresence>
+
+       {/* PRODUCT GRID */}
+       <div className="flex-1">
+             <div className="hidden lg:block mb-8 border-b border-white/10 pb-4">
+                <h2 className="text-4xl font-serif font-bold text-white mb-2">{context === "watch" ? "TIMEPIECES" : context === "perfume" ? "FRAGRANCES" : "INVENTORY"}</h2>
+                <p className="text-gray-400 text-sm">Showing {filteredProducts.length} curated items</p>
+             </div>
+             
+             {isLoading ? (
+               <div className="flex justify-center items-center h-[40vh]">
+                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+               </div>
+             ) : filteredProducts.length > 0 ? (
+                <motion.div 
+                    className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 lg:gap-8" 
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    key={`${context}-${selectedBrands}-${selectedCategories}`}
+                >
+                  {filteredProducts.map((product) => (
+                    <motion.div key={product.id} variants={cardVariants}>
+                        <ProductCard product={product} />
+                    </motion.div>
+                  ))}
+                </motion.div>
+             ) : (
+                 <div className="h-[50vh] flex flex-col items-center justify-center text-gray-500 space-y-4">
+                    <Search className="w-12 h-12 opacity-20" />
+                    <p>No products found matching your criteria.</p>
+                    <Button variant="link" className="text-yellow-500" onClick={() => { setSelectedBrands([]); setSelectedCategories([]); setSearchQuery(""); }}>Clear all filters</Button>
+                 </div>
+             )}
+       </div>
+    </div>
   );
 }

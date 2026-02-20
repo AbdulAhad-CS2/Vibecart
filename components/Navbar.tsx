@@ -43,37 +43,37 @@ const NAV_ITEMS = [
   {
     title: "Product",
     href: "/product",
-    hasSubmenu: true,
+    hasSubmenu: false,
     content: [
       {
         section: "Collections",
-        items: ["Classic", "Sports", "Office", "New Arrival", "Best Selling"]
+        // items: ["Classic", "Sports", "Office", "New Arrival", "Best Selling"]
       },
       {
         section: "Brands",
-        items: ["Nike", "Adidas", "Puma", "New Balance", "Dior"]
+        // items: ["Nike", "Adidas", "Puma", "New Balance", "Dior"]
       }
     ]
   },
-  {
-    title: "New & Featured",
-    href: "/new",
-    hasSubmenu: true,
-    content: [
-      {
-        section: "New Arrivals",
-        items: ["Just Dropped", "This Week", "Trending"]
-      },
-      {
-        section: "Featured",
-        items: ["Sole Vault Exclusives", "Collaborations", "Staff Picks"]
-      }
-    ]
-  },
+  // {
+  //   title: "New & Featured",
+  //   href: "/new",
+  //   hasSubmenu: true,
+  //   content: [
+  //     {
+  //       section: "New Arrivals",
+  //       items: ["Just Dropped", "This Week", "Trending"]
+  //     },
+  //     {
+  //       section: "Featured",
+  //       items: ["Sole Vault Exclusives", "Collaborations", "Staff Picks"]
+  //     }
+  //   ]
+  // },
   {
     title: "Sale",
     href: "/sale",
-    hasSubmenu: true,
+    hasSubmenu: false,
     content: [
       {
         section: "Discounts",
@@ -133,8 +133,8 @@ export default function Navbar() {
           <SheetContent side="left" className="bg-[#0a0a0a] border-r-white/10 text-white p-0 z-[100]">
             <SheetHeader className="p-6 border-b border-white/10">
               <SheetTitle className="text-left flex items-center gap-2">
-                 <Image src="/logo.webp" alt="Logo" width={30} height={30} className="w-8" />
-                 <span className="text-xl font-bold tracking-tighter text-white">SOLE VAULT</span>
+                 <Image src="/vibecart-logo-transparent.png" alt="Logo" width={30} height={30} className="w-8" />
+                 <span className="text-xl font-bold tracking-tighter text-white">Vibe Cart</span>
               </SheetTitle>
             </SheetHeader>
 
@@ -192,7 +192,7 @@ export default function Navbar() {
       {/* LOGO */}
       <Link href="/" className="flex items-center gap-3 cursor-pointer">
          <Image src="/vibecart-logo-transparent.png" alt="Sole Vault icon" width={50} height={50} className="w-8 md:w-10 h-auto opacity-90" />
-         <h1 className="text-xl md:text-2xl font-bold tracking-widest uppercase flex items-center font-serif">
+         <h1 className="text-base md:text-2xl font-bold tracking-widest uppercase flex items-center font-serif">
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-[#FBF5B7] via-[#BF953F] to-[#AA771C] drop-shadow-[0_0_10px_rgba(234,179,8,0.2)]">
                VIBE
             </span>
@@ -251,7 +251,7 @@ export default function Navbar() {
                   </>
                 ) : (
                   <NavigationMenuLink asChild>
-                    <Link href={item.href} className="bg-transparent text-gray-400 hover:text-white px-4 py-2 text-sm font-medium transition-colors block focus:text-white focus:outline-none">
+                    <Link href={item.href} className="bg-transparent text-gray-400 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors block focus:text-white focus:outline-none">
                       {item.title}
                     </Link>
                   </NavigationMenuLink>
@@ -287,7 +287,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] hover:from-[#FCF6BA] hover:to-[#BF953F] text-black text-xs font-black px-6 py-2 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(191,149,63,0.4)] hover:shadow-[0_0_30px_rgba(252,246,186,0.6)] hover:scale-105 uppercase tracking-widest font-serif">
+              <button className="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] hover:from-[#FCF6BA] hover:to-[#BF953F] text-black text-xs font-black px-2 md:px-6 py-2 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(191,149,63,0.4)] hover:shadow-[0_0_30px_rgba(252,246,186,0.6)] hover:scale-105 uppercase tracking-widest font-serif">
                 SIGN IN
               </button>
             </SignInButton>
